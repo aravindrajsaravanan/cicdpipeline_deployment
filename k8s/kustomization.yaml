@@ -17,4 +17,4 @@ labels:
 images:
   - name: cicd-app
     newName: 718460151470.dkr.ecr.ap-south-1.amazonaws.com/cicd-app
-    newTag: 4-192ff5f
+    newTag: 5-d0294c0
