@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: cicd-app
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - pdb.yaml
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: cicd-pipeline
+      app.kubernetes.io/managed-by: argocd
+
+# Jenkins updates newTag on every successful build. Argo CD then syncs it.
+images:
+  - name: cicd-app
+    newName: 718460151470.dkr.ecr.ap-south-1.amazonaws.com/cicd-app
+    newTag: initial
