@@ -18,6 +18,31 @@ argocd/
 2. Jenkins tests, scans and pushes the image to ECR, then commits the new tag to `k8s/kustomization.yaml` here.
 3. Argo CD notices the commit (polls every ~3 min) and rolls out the new image.
 
+## Install Argo CD (once per cluster)
+
+```bash
+kubectl create namespace argocd
+kubectl apply -n argocd --server-side --force-conflicts \
+  -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.6.1/manifests/install.yaml
+kubectl -n argocd rollout status deploy --timeout=300s
+kubectl apply -f argocd/application.yaml
+```
+
+### Open the Argo CD UI
+
+```bash
+kubectl port-forward svc/argocd-server -n argocd 8443:443
+```
+
+Browse to https://localhost:8443 (self-signed certificate warning is expected). User: `admin`.
+Initial password:
+
+```bash
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
+
+Change it after the first login (User Info -> Update Password).
+
 ## Rules
 
 - Don't edit the cluster by hand. Argo CD's self-heal reverts manual changes. Change this repo instead.
